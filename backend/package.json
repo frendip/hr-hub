@@ -1,0 +1,30 @@
+{
+  "name": "hr-hub-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && npx tsc",
+    "createTables": "npm run build && node -r dotenv/config dist/db/tableCreator.js",
+    "start": "node dist/app.js",
+    "dev": "npx tsc -w & nodemon dist/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "rimraf": "^5.0.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.5",
+    "@types/pg": "^8.10.9",
+    "nodemon": "^3.0.3",
+    "typescript": "^5.3.3"
+  }
+}
