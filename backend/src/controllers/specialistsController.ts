@@ -1,8 +1,7 @@
 import type {Response, Request, NextFunction} from 'express';
 import ApiError from '../error/ApiError.js';
 import Connection from '../db/connection.js';
-import ISpecialistRaw from '../types/ISpecialistRaw.js';
-import ISpecialist from '../types/ISpecialist.js';
+import {ISpecialist, ISpecialistRaw} from '../types/ISpecialist.js';
 
 class SpecialistsController {
     async getAll(req: Request, res: Response, next: NextFunction) {
@@ -62,7 +61,7 @@ class SpecialistsController {
 
     async deleteAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const deleteCount = await Connection.deleteSpecialist();
+            const deleteCount = await Connection.deleteSpecialists();
 
             if (!deleteCount) {
                 return next(ApiError.badRequest('Nothing to delete'));
@@ -80,7 +79,7 @@ class SpecialistsController {
         try {
             const id = +req.params.id;
 
-            const deleteCount = await Connection.deleteSpecialist(id);
+            const deleteCount = await Connection.deleteSpecialists(id);
 
             if (!deleteCount) {
                 return next(ApiError.badRequest('Nothing to delete'));

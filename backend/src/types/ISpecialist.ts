@@ -1,5 +1,11 @@
-import ISpecialistRaw from './ISpecialistRaw.js';
+import {ITime} from './ITime.js';
 
-export default interface ISpecialist extends ISpecialistRaw {
+export interface ISpecialistRaw {
+    full_name: string;
+    work_start_time: ITime;
+    work_end_time: ITime;
+}
+
+export interface ISpecialist extends ISpecialistRaw {
     specialist_id: number;
 }

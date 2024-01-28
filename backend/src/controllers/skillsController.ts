@@ -1,8 +1,7 @@
 import type {NextFunction, Request, Response} from 'express';
-import ISkillRaw from '../types/ISkillRaw.js';
 import Connection from '../db/connection.js';
 import ApiError from '../error/ApiError.js';
-import ISkill from '../types/ISkill.js';
+import {ISkill, ISkillRaw} from '../types/ISkill.js';
 
 class SkillsController {
     async getAll(req: Request, res: Response, next: NextFunction) {

@@ -38,7 +38,9 @@ export default async function tableCreator() {
             interview_id SERIAL PRIMARY KEY,
             applicant_name VARCHAR(255) NOT NULL,
             start_time TIME NOT NULL,
-            duration_time TIME NOT NULL
+            duration_time TIME NOT NULL,
+            specialist_id INT,
+            FOREIGN KEY (specialist_id) REFERENCES specialists(specialist_id) ON DELETE SET NULL
         );
     `);
         console.log('Tables interviews created successfully.');

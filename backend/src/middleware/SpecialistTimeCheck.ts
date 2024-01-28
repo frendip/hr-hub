@@ -1,6 +1,5 @@
 import type {Request, Response, NextFunction} from 'express';
-import ISpecialist from '../types/ISpecialist.js';
-import ISpecialistRaw from '../types/ISpecialistRaw.js';
+import {ISpecialist, ISpecialistRaw} from '../types/ISpecialist.js';
 import {ITime} from '../types/ITime.js';
 import convertTimeToSeconds from '../utils/convertTimeToSeconds.js';
 

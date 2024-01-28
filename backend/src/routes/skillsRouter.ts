@@ -9,4 +9,5 @@ router.post('/', skillsController.create);
 router.put('/', skillsController.update);
 router.delete('/', skillsController.deleteAll);
 router.delete('/:id', skillsController.deleteById);
+
 export default router;
