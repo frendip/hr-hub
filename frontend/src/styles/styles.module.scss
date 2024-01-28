@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap');
+@import 'nullstyle';
+@import 'variables';
+
+body {
+    font-family: 'Exo 2', sans-serif;
+    background: #f4f7ff no-repeat fixed;
+}
+
+[id='root'] {
+    height: 100%;
+}

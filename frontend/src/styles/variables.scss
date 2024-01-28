@@ -1,0 +1,12 @@
+:root {
+    --sidebar-bg-color: #465dfd;
+    --sidebar-text-color: #fff;
+    --sidebar-btn-hover-gradient: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0.3) 35%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+
+    --transition-duration: 0.25s;
+}

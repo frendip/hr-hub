@@ -1,5 +1,13 @@
-function App() {
-	return <div>Start</div>
-}
+import AppRouter from './components/AppRouter/AppRouter';
+import './styles/styles.module.scss';
+import {BrowserRouter} from 'react-router-dom';
 
-export default App
+const App = () => {
+    return (
+        <BrowserRouter>
+            <AppRouter />
+        </BrowserRouter>
+    );
+};
+
+export default App;
