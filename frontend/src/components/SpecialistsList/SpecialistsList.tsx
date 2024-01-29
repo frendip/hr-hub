@@ -10,6 +10,7 @@ const SpecialistsList = () => {
     const {specialists, status, errorMessage} = useAppSelector((state) => state.specialists);
     useEffect(() => {
         dispatch(fetchSpecialists());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
