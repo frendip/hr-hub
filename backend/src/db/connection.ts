@@ -4,6 +4,10 @@ import {ISpecialist, ISpecialistRaw} from '../types/ISpecialist.js';
 import dbPool from './config.js';
 
 export default class Connection {
+    /* -------------------Skills------------------ */
+    /* ------------------------------------------- */
+    /* ------------------------------------------- */
+
     static async getSkills(id?: number): Promise<ISkill | ISkill[]> {
         const client = await dbPool.connect();
 
@@ -90,7 +94,7 @@ export default class Connection {
         }
     }
 
-    /* ------------------------------------------- */
+    /* ----------------Specialists---------------- */
     /* ------------------------------------------- */
     /* ------------------------------------------- */
 
@@ -101,13 +105,22 @@ export default class Connection {
             if (id === undefined) {
                 const query = 'SELECT * FROM specialists';
                 const result = await client.query(query);
+                const specialists = result.rows as ISpecialist[];
 
-                return result.rows;
+                for (const specialist of specialists) {
+                    const skills = await this.getSpecialistSkills(specialist.specialist_id);
+                    specialist.skills = skills;
+                }
+
+                return specialists;
             } else {
                 const query = `SELECT * FROM specialists WHERE specialist_id=${id}`;
                 const result = await client.query(query);
+                const specialist = result.rows[0] as ISpecialist;
+                const skills = await this.getSpecialistSkills(id);
+                specialist.skills = skills;
 
-                return result.rows[0];
+                return specialist;
             }
         } catch (error) {
             throw error;
@@ -123,8 +136,17 @@ export default class Connection {
             await client.query('BEGIN');
 
             const query = `INSERT INTO specialists (full_name, work_start_time, work_end_time) 
-                VALUES ('${specialist.full_name}', '${specialist.work_start_time}', '${specialist.work_end_time}')`;
-            await client.query(query);
+                VALUES ('${specialist.full_name}', '${specialist.work_start_time}', '${specialist.work_end_time}')
+                RETURNING specialist_id;`;
+
+            const result = await client.query(query);
+            const specialist_id = result.rows[0]['specialist_id'];
+
+            if (specialist.skills) {
+                for (const skill of specialist.skills) {
+                    this.insertSpecialistSkills(specialist_id, skill.skill_id);
+                }
+            }
 
             await client.query('COMMIT');
         } catch (error) {
@@ -146,6 +168,14 @@ export default class Connection {
             SET full_name='${newSpecialistData.full_name}', work_start_time='${newSpecialistData.work_start_time}', work_end_time='${newSpecialistData.work_end_time}'
             WHERE specialist_id=${newSpecialistData.specialist_id}`;
             await client.query(query);
+
+            this.deleteSpecialistSkills(newSpecialistData.specialist_id);
+
+            if (newSpecialistData.skills) {
+                for (const skill of newSpecialistData.skills) {
+                    this.insertSpecialistSkills(newSpecialistData.specialist_id, skill.skill_id);
+                }
+            }
 
             await client.query('COMMIT');
 
@@ -180,7 +210,69 @@ export default class Connection {
         }
     }
 
-    /* ------------------------------------------- */
+    static async getSpecialistSkills(id: number): Promise<ISkill[]> {
+        const client = await dbPool.connect();
+
+        try {
+            const query = `SELECT skills.skill_id, skills.skill_name
+                FROM specialists
+                JOIN specialist_skills ON specialists.specialist_id = specialist_skills.specialist_id
+                JOIN skills ON specialist_skills.skill_id = skills.skill_id
+                WHERE specialists.specialist_id = ${id};`;
+
+            const result = await client.query(query);
+
+            return result.rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async insertSpecialistSkills(specialist_id: number, skill_id: number): Promise<void> {
+        const client = await dbPool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const query = `INSERT INTO specialist_skills (specialist_id, skill_id)
+            VALUES (${specialist_id}, ${skill_id});`;
+            await client.query(query);
+
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async deleteSpecialistSkills(specialist_id: number, skill_id?: number): Promise<void> {
+        const client = await dbPool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const query =
+                skill_id === undefined
+                    ? `DELETE FROM specialist_skills
+            WHERE specialist_id = ${specialist_id};`
+                    : `DELETE FROM specialist_skills
+            WHERE specialist_id = ${specialist_id} AND skill_id = ${skill_id};`;
+            await client.query(query);
+
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    /* -----------------Interviews---------------- */
     /* ------------------------------------------- */
     /* ------------------------------------------- */
 
