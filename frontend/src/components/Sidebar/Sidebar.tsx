@@ -16,8 +16,8 @@ const Sidebar: FC<SidebarProps> = ({className}) => {
                 <div className={classes.sidebar__title}>HR Hub</div>
             </Link>
             <div className={clsx(classes.sidebar__list, classes.list)}>
-                <Link to={'/test'} className={classes.list__item}>
-                    test
+                <Link to={'/specialists'} className={classes.list__item}>
+                    Специалисты
                 </Link>
                 <Link to={'/test1'} className={classes.list__item}>
                     test1
