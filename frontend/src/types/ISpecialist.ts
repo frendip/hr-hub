@@ -1,3 +1,4 @@
+import {ISkill} from './ISkill.js';
 import {ITime} from './ITime.js';
 
 export interface ISpecialist {
@@ -5,4 +6,5 @@ export interface ISpecialist {
     full_name: string;
     work_start_time: ITime;
     work_end_time: ITime;
+    skills: ISkill[];
 }

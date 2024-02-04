@@ -14,8 +14,7 @@ const SpecialistsList = () => {
     }, []);
 
     return (
-        <div>
-            <div className={classes.title}>Специалисты</div>
+        <>
             {status === 'error' ? (
                 <div className={classes.error}>
                     <h2 className={classes.error__title}>Произошла ошибка.</h2>
@@ -24,7 +23,8 @@ const SpecialistsList = () => {
                     </div>
                 </div>
             ) : (
-                <div className={classes.items}>
+                <div className={classes.specialistList}>
+                    <SpecialistsTitle />
                     {status === 'loading' ? (
                         <div>Loading</div>
                     ) : (
@@ -34,7 +34,19 @@ const SpecialistsList = () => {
                     )}
                 </div>
             )}
-        </div>
+        </>
+    );
+};
+
+const SpecialistsTitle = () => {
+    return (
+        <>
+            <div className={classes.specialistList__title}>ФИО</div>
+            <div className={classes.specialistList__title}>Время начала работы</div>
+            <div className={classes.specialistList__title}>Время конца работы</div>
+            <div className={classes.specialistList__title}>Навыки</div>
+            <div></div>
+        </>
     );
 };
 

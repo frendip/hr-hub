@@ -1,5 +1,5 @@
 import {FC, HTMLAttributes} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import classes from './Sidebar.module.scss';
 import clsx from 'clsx';
 import logoIcon from '../../assets/img/logo.svg';
@@ -7,6 +7,8 @@ import logoIcon from '../../assets/img/logo.svg';
 interface SidebarProps extends HTMLAttributes<HTMLDivElement> {}
 
 const Sidebar: FC<SidebarProps> = ({className}) => {
+    const {pathname} = useLocation();
+
     return (
         <div className={clsx(className, classes.sidebar)}>
             <Link to={'/'} className={classes.sidebar__header}>
@@ -16,7 +18,10 @@ const Sidebar: FC<SidebarProps> = ({className}) => {
                 <div className={classes.sidebar__title}>HR Hub</div>
             </Link>
             <div className={clsx(classes.sidebar__list, classes.list)}>
-                <Link to={'/specialists'} className={classes.list__item}>
+                <Link
+                    to={'/specialists'}
+                    className={clsx(classes.list__item, pathname === '/specialists' && classes.list__item_active)}
+                >
                     Специалисты
                 </Link>
                 <Link to={'/test1'} className={classes.list__item}>

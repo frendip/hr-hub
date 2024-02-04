@@ -83,5 +83,9 @@
         &:hover::before {
             opacity: 1;
         }
+
+        &_active {
+            background: var(--sidebar-btn-hover-gradient);
+        }
     }
 }
