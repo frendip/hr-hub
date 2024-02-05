@@ -1,4 +1,6 @@
 .specialistItem {
+    min-height: 20px;
+    max-height: 80px;
     padding: 0 15px;
     margin-bottom: 30px;
 }
@@ -8,6 +10,5 @@
 }
 
 .skills {
-    max-height: 80px;
     overflow: auto;
 }

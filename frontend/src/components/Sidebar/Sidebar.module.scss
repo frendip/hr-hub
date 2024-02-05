@@ -3,7 +3,7 @@
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 
-    background-color: var(--sidebar-bg-color);
+    background-color: var(--primary-color);
 
     &__header {
         display: flex;
@@ -42,7 +42,7 @@
     &__title {
         font-weight: 600;
         font-size: 20px;
-        color: var(--sidebar-text-color);
+        color: var(--text-color);
     }
 
     &__list {
@@ -60,7 +60,7 @@
         padding: 15px 25px;
 
         font-size: 18px;
-        color: var(--sidebar-text-color);
+        color: var(--text-color);
 
         transition: background 1s;
 

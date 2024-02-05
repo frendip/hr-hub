@@ -4,12 +4,15 @@ import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {fetchSpecialists} from '../../store/slices/specialistsSlice';
 import {useAppSelector} from '../../hooks/useAppSelector';
 import classes from './SpecialistsList.module.scss';
+import {fetchSkills} from '../../store/slices/skillsSlice';
 
 const SpecialistsList = () => {
     const dispatch = useAppDispatch();
     const {specialists, status, errorMessage} = useAppSelector((state) => state.specialists);
+
     useEffect(() => {
         dispatch(fetchSpecialists());
+        dispatch(fetchSkills());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

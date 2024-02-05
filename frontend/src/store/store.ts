@@ -1,9 +1,11 @@
 import {configureStore} from '@reduxjs/toolkit';
 import specialistsSlice from './slices/specialistsSlice';
+import skillsSlice from './slices/skillsSlice';
 
 const store = configureStore({
     reducer: {
-        specialists: specialistsSlice
+        specialists: specialistsSlice,
+        skills: skillsSlice
     }
 });
 

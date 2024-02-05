@@ -8,3 +8,7 @@ export interface ISpecialist {
     work_end_time: ITime;
     skills: ISkill[];
 }
+
+export interface ISpecialistCheckboxSkill extends Omit<ISpecialist, 'skills'> {
+    skills: Record<number, boolean>[];
+}

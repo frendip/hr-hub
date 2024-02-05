@@ -3,7 +3,7 @@ import {ISpecialist} from '../../types/ISpecialist';
 import SpecialistsService from '../../API/SpecialistsService';
 
 export const fetchSpecialists = createAsyncThunk<ISpecialist[]>(
-    'products/fetchProducts',
+    'specialists/fetchSpecialists',
     async (_, {rejectWithValue}) => {
         try {
             const response = await SpecialistsService.getSpecialists();
@@ -33,7 +33,7 @@ const initialState: specialistsState = {
     status: Status.LOADING
 };
 
-const productsSlice = createSlice({
+const specialistsSlice = createSlice({
     name: 'specialists',
     initialState,
     reducers: {},
@@ -55,4 +55,4 @@ const productsSlice = createSlice({
     }
 });
 
-export default productsSlice.reducer;
+export default specialistsSlice.reducer;
