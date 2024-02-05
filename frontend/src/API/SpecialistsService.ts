@@ -13,6 +13,22 @@ export default class SpecialistsService {
         return await response.json();
     }
 
+    static async createSpecialist(newSpecialist: ISpecialist) {
+        const response = await fetch(this._url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newSpecialist)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error creating specialists: ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
     static async updateSpecialist(updatedSpecialist: ISpecialist) {
         const response = await fetch(this._url, {
             method: 'PUT',
@@ -21,6 +37,22 @@ export default class SpecialistsService {
             },
             body: JSON.stringify(updatedSpecialist)
         });
+
+        if (!response.ok) {
+            throw new Error(`Error updating specialists: ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    static async deleteSpecialist(specialist_id: number) {
+        const response = await fetch(this._url + specialist_id, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error deleting specialists: ${response.statusText}`);
+        }
 
         return await response.json();
     }

@@ -36,9 +36,9 @@ class SpecialistsController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const specialistData: ISpecialistRaw = req.body;
-            await Connection.insertSpecialist(specialistData);
+            const newSpecialist = await Connection.insertSpecialist(specialistData);
 
-            res.status(200).json({message: 'Specialist inserted successfully'});
+            res.status(200).json({specialist: newSpecialist, message: 'Specialist inserted successfully'});
         } catch (error) {
             console.error('Error creating specialist,', error);
 

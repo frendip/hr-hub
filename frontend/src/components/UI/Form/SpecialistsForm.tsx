@@ -1,17 +1,27 @@
 import React, {FC, Dispatch, SetStateAction, useEffect} from 'react';
 import {SubmitHandler, useForm} from 'react-hook-form';
 import classes from './Form.module.scss';
-import {ISpecialist, ISpecialistCheckboxSkill} from '../../types/ISpecialist';
-import {useAppSelector} from '../../hooks/useAppSelector';
+import {ISpecialist, ISpecialistCheckboxSkill} from '../../../types/ISpecialist';
+import {useAppSelector} from '../../../hooks/useAppSelector';
 import clsx from 'clsx';
+import {CommonButton} from '../Button/Button';
 
-interface EditSpecialistsFormProps {
+interface SpecialistsFormProps {
     setPopupActive: Dispatch<SetStateAction<boolean>>;
-    specialist: ISpecialist;
     onSubmitHandler: SubmitHandler<ISpecialist>;
+    specialist?: ISpecialist;
 }
 
-const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, specialist, onSubmitHandler}) => {
+const SpecialistsForm: FC<SpecialistsFormProps> = ({setPopupActive, onSubmitHandler, specialist}) => {
+    const defaultValues = specialist
+        ? {
+              specialist_id: specialist.specialist_id,
+              full_name: specialist.full_name,
+              work_start_time: specialist.work_start_time,
+              work_end_time: specialist.work_end_time
+          }
+        : {};
+
     const {
         register,
         formState: {errors},
@@ -19,20 +29,17 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
         setValue
     } = useForm<ISpecialistCheckboxSkill>({
         mode: 'onChange',
-        defaultValues: {
-            specialist_id: specialist.specialist_id,
-            full_name: specialist.full_name,
-            work_start_time: specialist.work_start_time,
-            work_end_time: specialist.work_end_time
-        }
+        defaultValues
     });
 
     const {skills} = useAppSelector((state) => state.skills);
 
     useEffect(() => {
-        specialist.skills.forEach((skill) => {
-            setValue(`skills.${skill.skill_id}`, {[skill.skill_id]: true});
-        });
+        if (specialist) {
+            specialist.skills.forEach((skill) => {
+                setValue(`skills.${skill.skill_id}`, {[skill.skill_id]: true});
+            });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -45,7 +52,9 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
 
     return (
         <div className={classes.card}>
-            <h2 className={classes.card__title}>Редактирование информации о сотруднике</h2>
+            <h2 className={classes.card__title}>
+                {specialist ? 'Редактирование информации о сотрудник' : 'Добавление сотрудника'}
+            </h2>
             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                 <div className={classes.form__section}>
                     <div className={classes.form__sectionTitle}>ФИО</div>
@@ -105,11 +114,11 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
                     </div>
                 </div>
                 <div className={classes.form__submit}>
-                    <button className={classes.form__button}>Изменить</button>
+                    <CommonButton variant="secondary">{specialist ? 'Изменить' : 'Добавить'}</CommonButton>
                 </div>
             </form>
         </div>
     );
 };
 
-export default EditSpecialistsForm;
+export default SpecialistsForm;

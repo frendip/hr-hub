@@ -1,12 +1,15 @@
-import {useEffect} from 'react';
+import {FC, useEffect, HTMLAttributes} from 'react';
 import SpecialistItem from '../SpecialistItem/SpecialistItem';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
 import {fetchSpecialists} from '../../store/slices/specialistsSlice';
 import {useAppSelector} from '../../hooks/useAppSelector';
 import classes from './SpecialistsList.module.scss';
 import {fetchSkills} from '../../store/slices/skillsSlice';
+import clsx from 'clsx';
 
-const SpecialistsList = () => {
+interface SpecialistsListProps extends HTMLAttributes<HTMLDivElement> {}
+
+const SpecialistsList: FC<SpecialistsListProps> = ({className}) => {
     const dispatch = useAppDispatch();
     const {specialists, status, errorMessage} = useAppSelector((state) => state.specialists);
 
@@ -26,7 +29,7 @@ const SpecialistsList = () => {
                     </div>
                 </div>
             ) : (
-                <div className={classes.specialistList}>
+                <div className={clsx(className, classes.specialistList)}>
                     <SpecialistsTitle />
                     {status === 'loading' ? (
                         <div>Loading</div>

@@ -4,9 +4,11 @@ import classes from './SpecialistItem.module.scss';
 import {clsx} from 'clsx';
 import {SubmitHandler} from 'react-hook-form';
 import Popup from '../Popup/Popup';
-import EditSpecialistsForm from '../Form/EditSpecialistsForm';
+import SpecialistsForm from '../UI/Form/SpecialistsForm';
 import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {updateSpecialist} from '../../store/slices/specialistsSlice';
+import {deleteSpecialist, updateSpecialist} from '../../store/slices/specialistsSlice';
+import deleteIcon from '../../assets/img/deleteIcon.svg';
+import editIcon from '../../assets/img/editIcon.svg';
 
 interface SpecialistItemProps {
     specialist: ISpecialist;
@@ -14,12 +16,17 @@ interface SpecialistItemProps {
 
 const SpecialistItem: FC<SpecialistItemProps> = ({specialist}) => {
     const dispatch = useAppDispatch();
+    const [popupActive, setPopupActive] = useState(false);
 
-    const test: SubmitHandler<ISpecialist> = (updatedSpecialist) => {
+    const updateSpecialistHandler: SubmitHandler<ISpecialist> = (updatedSpecialist) => {
         dispatch(updateSpecialist(updatedSpecialist));
     };
 
-    const [popupActive, setPopupActive] = useState(false);
+    const deleteSpecialistHandler = () => {
+        if (window.confirm('Вы действительно хотите удалить сотрудника?')) {
+            dispatch(deleteSpecialist(specialist.specialist_id));
+        }
+    };
 
     return (
         <>
@@ -29,11 +36,20 @@ const SpecialistItem: FC<SpecialistItemProps> = ({specialist}) => {
             <div className={clsx(classes.specialistItem, classes.skills)}>
                 {specialist.skills.map((skill) => skill.skill_name).join(', ')}
             </div>
-            <div className={classes.specialistItem} onClick={() => setPopupActive(true)}>
-                edit
+            <div className={clsx(classes.specialistItem, classes.modify)}>
+                <div className={classes.modify__icon} onClick={() => setPopupActive(true)}>
+                    <img src={editIcon} alt="edit" />
+                </div>
+                <div className={classes.modify__icon} onClick={deleteSpecialistHandler}>
+                    <img src={deleteIcon} alt="delete" />
+                </div>
             </div>
             <Popup popupActive={popupActive} setPopupActive={setPopupActive}>
-                <EditSpecialistsForm setPopupActive={setPopupActive} specialist={specialist} onSubmitHandler={test} />
+                <SpecialistsForm
+                    setPopupActive={setPopupActive}
+                    onSubmitHandler={updateSpecialistHandler}
+                    specialist={specialist}
+                />
             </Popup>
         </>
     );

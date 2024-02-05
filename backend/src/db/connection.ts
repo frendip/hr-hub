@@ -129,7 +129,7 @@ export default class Connection {
         }
     }
 
-    static async insertSpecialist(specialist: ISpecialistRaw): Promise<void> {
+    static async insertSpecialist(specialist: ISpecialistRaw): Promise<ISpecialist> {
         const client = await dbPool.connect();
 
         try {
@@ -141,6 +141,7 @@ export default class Connection {
 
             const result = await client.query(query);
             const specialist_id = result.rows[0]['specialist_id'];
+            const newSpecialist = {...specialist, specialist_id} as ISpecialist;
 
             if (specialist.skills) {
                 for (const skill of specialist.skills) {
@@ -149,6 +150,8 @@ export default class Connection {
             }
 
             await client.query('COMMIT');
+
+            return newSpecialist;
         } catch (error) {
             await client.query('ROLLBACK');
 
