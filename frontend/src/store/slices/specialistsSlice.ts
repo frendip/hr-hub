@@ -15,6 +15,19 @@ export const fetchSpecialists = createAsyncThunk<ISpecialist[]>(
     }
 );
 
+export const updateSpecialist = createAsyncThunk<ISpecialist, ISpecialist>(
+    'specialists/updateSpecialist',
+    async (updatedSpecialist, {rejectWithValue}) => {
+        try {
+            const response = await SpecialistsService.updateSpecialist(updatedSpecialist);
+            const data = response.specialist as ISpecialist;
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 enum Status {
     LOADING = 'loading',
     SUCCESS = 'success',
@@ -48,6 +61,21 @@ const specialistsSlice = createSlice({
                 state.specialists = [];
             })
             .addCase(fetchSpecialists.rejected, (state, action) => {
+                state.status = Status.ERROR;
+                state.errorMessage = action.payload as string;
+                state.specialists = [];
+            })
+            .addCase(updateSpecialist.fulfilled, (state, action) => {
+                state.specialists = state.specialists.map((specialist) =>
+                    specialist.specialist_id === action.payload.specialist_id ? action.payload : specialist
+                );
+
+                state.status = Status.SUCCESS;
+            })
+            .addCase(updateSpecialist.pending, (state) => {
+                state.status = Status.LOADING;
+            })
+            .addCase(updateSpecialist.rejected, (state, action) => {
                 state.status = Status.ERROR;
                 state.errorMessage = action.payload as string;
                 state.specialists = [];

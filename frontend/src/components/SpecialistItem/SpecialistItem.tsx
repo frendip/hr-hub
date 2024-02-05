@@ -5,14 +5,18 @@ import {clsx} from 'clsx';
 import {SubmitHandler} from 'react-hook-form';
 import Popup from '../Popup/Popup';
 import EditSpecialistsForm from '../Form/EditSpecialistsForm';
+import {useAppDispatch} from '../../hooks/useAppDispatch';
+import {updateSpecialist} from '../../store/slices/specialistsSlice';
 
 interface SpecialistItemProps {
     specialist: ISpecialist;
 }
 
 const SpecialistItem: FC<SpecialistItemProps> = ({specialist}) => {
-    const test: SubmitHandler<ISpecialist> = (data) => {
-        console.log(data);
+    const dispatch = useAppDispatch();
+
+    const test: SubmitHandler<ISpecialist> = (updatedSpecialist) => {
+        dispatch(updateSpecialist(updatedSpecialist));
     };
 
     const [popupActive, setPopupActive] = useState(false);

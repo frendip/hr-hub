@@ -47,8 +47,8 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
         <div className={classes.card}>
             <h2 className={classes.card__title}>Редактирование информации о сотруднике</h2>
             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-                <label className={classes.form__label}>
-                    <div className={classes.form__labelTitle}>ФИО</div>
+                <div className={classes.form__section}>
+                    <div className={classes.form__sectionTitle}>ФИО</div>
                     <input
                         className={classes.form__input}
                         {...register('full_name', {
@@ -60,9 +60,9 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
                         })}
                     />
                     {errors?.full_name && <div className={classes.form__error}>{errors.full_name.message}</div>}
-                </label>
-                <label className={classes.form__label}>
-                    <div className={classes.form__labelTitle}>Время начала работы</div>
+                </div>
+                <div className={classes.form__section}>
+                    <div className={classes.form__sectionTitle}>Время начала работы</div>
                     <input
                         className={classes.form__input}
                         {...register('work_start_time', {
@@ -76,9 +76,9 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
                     {errors?.work_start_time && (
                         <div className={classes.form__error}>{errors.work_start_time.message}</div>
                     )}
-                </label>
-                <label className={classes.form__label}>
-                    <div className={classes.form__labelTitle}>Время конца работы</div>
+                </div>
+                <div className={classes.form__section}>
+                    <div className={classes.form__sectionTitle}>Время конца работы</div>
                     <input
                         className={classes.form__input}
                         {...register('work_end_time', {
@@ -90,18 +90,20 @@ const EditSpecialistsForm: FC<EditSpecialistsFormProps> = ({setPopupActive, spec
                         })}
                     />
                     {errors?.work_end_time && <div className={classes.form__error}>{errors.work_end_time.message}</div>}
-                </label>
-                <label className={classes.form__label}>
-                    <div className={classes.form__labelTitle}>Навыки</div>
+                </div>
+                <div className={classes.form__section}>
+                    <div className={classes.form__sectionTitle}>Навыки</div>
                     <div className={clsx(classes.form__checkboxes, classes.checkboxes)}>
-                        {skills.map((skill) => (
-                            <div key={skill.skill_id} className={classes.checkboxes__item}>
-                                <input type="checkbox" {...register(`skills.${skill.skill_id}`)} />
-                                <div className={classes.checkboxes__title}>{skill.skill_name}</div>
-                            </div>
-                        ))}
+                        <div className={classes.checkboxes__container}>
+                            {skills.map((skill) => (
+                                <label key={skill.skill_id} className={classes.checkboxes__item}>
+                                    <input type="checkbox" {...register(`skills.${skill.skill_id}`)} />
+                                    <div className={classes.checkboxes__title}>{skill.skill_name}</div>
+                                </label>
+                            ))}
+                        </div>
                     </div>
-                </label>
+                </div>
                 <div className={classes.form__submit}>
                     <button className={classes.form__button}>Изменить</button>
                 </div>

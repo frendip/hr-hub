@@ -1,3 +1,4 @@
+import {ISpecialist} from '../types/ISpecialist';
 import {urlPath} from './backendUrl';
 
 export default class SpecialistsService {
@@ -8,6 +9,18 @@ export default class SpecialistsService {
         if (!response.ok) {
             throw new Error(`Error fetching specialists: ${response.statusText}`);
         }
+
+        return await response.json();
+    }
+
+    static async updateSpecialist(updatedSpecialist: ISpecialist) {
+        const response = await fetch(this._url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedSpecialist)
+        });
 
         return await response.json();
     }
