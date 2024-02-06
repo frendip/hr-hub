@@ -30,7 +30,7 @@ export default class Connection {
         }
     }
 
-    static async insertSkill(skill: ISkillRaw): Promise<void> {
+    static async insertSkill(skill: ISkillRaw): Promise<ISkill> {
         const client = await dbPool.connect();
 
         try {
@@ -38,10 +38,16 @@ export default class Connection {
 
             const query = `
             INSERT INTO skills (skill_name)
-            VALUES('${skill.skill_name}')`;
-            await client.query(query);
+            VALUES('${skill.skill_name}')
+            RETURNING skill_id`;
+
+            const result = await client.query(query);
+            const skill_id = result.rows[0]['skill_id'];
+            const newSkill = {...skill, skill_id} as ISkill;
 
             await client.query('COMMIT');
+
+            return newSkill;
         } catch (error) {
             await client.query('ROLLBACK');
 

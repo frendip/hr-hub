@@ -1,23 +1,13 @@
-import {FC, useEffect, HTMLAttributes} from 'react';
+import {FC, HTMLAttributes} from 'react';
 import SpecialistItem from '../SpecialistItem/SpecialistItem';
-import {useAppDispatch} from '../../hooks/useAppDispatch';
-import {fetchSpecialists} from '../../store/slices/specialistsSlice';
 import {useAppSelector} from '../../hooks/useAppSelector';
 import classes from './SpecialistsList.module.scss';
-import {fetchSkills} from '../../store/slices/skillsSlice';
 import clsx from 'clsx';
 
 interface SpecialistsListProps extends HTMLAttributes<HTMLDivElement> {}
 
 const SpecialistsList: FC<SpecialistsListProps> = ({className}) => {
-    const dispatch = useAppDispatch();
     const {specialists, status, errorMessage} = useAppSelector((state) => state.specialists);
-
-    useEffect(() => {
-        dispatch(fetchSpecialists());
-        dispatch(fetchSkills());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <>

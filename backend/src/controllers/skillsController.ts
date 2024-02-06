@@ -36,9 +36,9 @@ class SkillsController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const skillData: ISkillRaw = req.body;
-            await Connection.insertSkill(skillData);
+            const newSkill = await Connection.insertSkill(skillData);
 
-            res.status(200).json({message: 'Skill inserted successfully'});
+            res.status(200).json({skill: newSkill, message: 'Skill inserted successfully'});
         } catch (error) {
             console.error('Error creating skill,', error);
 
