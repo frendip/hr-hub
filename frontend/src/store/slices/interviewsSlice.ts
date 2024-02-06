@@ -32,7 +32,7 @@ export const updateInterview = createAsyncThunk<IInterview, IInterview>(
     async (updatedInterview, {rejectWithValue}) => {
         try {
             const response = await InterviewsService.updateInterview(updatedInterview);
-            const data = response.skill as IInterview;
+            const data = response.interview as IInterview;
             return data;
         } catch (error: any) {
             return rejectWithValue(error.message);

@@ -1,0 +1,23 @@
+.interviewsList {
+    height: 100%;
+
+    overflow-y: auto;
+
+    display: grid;
+    grid-template-columns: repeat(5, 1fr) 10%;
+    grid-auto-rows: max-content;
+
+    border-radius: 15px;
+
+    &__title {
+        position: relative;
+
+        font-size: 16px;
+        font-weight: 600;
+
+        padding: 0 15px 10px 15px;
+        margin-bottom: 20px;
+
+        border-bottom: 1px solid var(--shadow-color);
+    }
+}

@@ -8,4 +8,9 @@ export interface IInterview {
     duration_time: ITime;
     skills: ISkill[];
     specialist_id?: number;
+    specialist_name?: string;
+}
+
+export interface IInterviewCheckboxSkill extends Omit<IInterview, 'skills'> {
+    skills: Record<number, boolean>[];
 }

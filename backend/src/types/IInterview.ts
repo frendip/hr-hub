@@ -7,6 +7,7 @@ export interface IInterviewRaw {
     duration_time: ITime;
     skills: ISkill[];
     specialist_id?: number;
+    specialist_name?: string;
 }
 
 export interface IInterview extends IInterviewRaw {

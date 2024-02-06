@@ -178,8 +178,7 @@ export default class Connection {
             WHERE specialist_id=${newSpecialistData.specialist_id}`;
             await client.query(query);
 
-            this.deleteSpecialistSkills(newSpecialistData.specialist_id);
-
+            await this.deleteSpecialistSkills(newSpecialistData.specialist_id);
             if (newSpecialistData.skills) {
                 for (const skill of newSpecialistData.skills) {
                     this.insertSpecialistSkills(newSpecialistData.specialist_id, skill.skill_id);
@@ -297,6 +296,9 @@ export default class Connection {
                 for (const interview of interviews) {
                     const skills = await this.getInterviewSkills(interview.interview_id);
                     interview.skills = skills;
+
+                    const specialist_name = await this.getInterviewSpecialist(interview.interview_id);
+                    interview.specialist_name = specialist_name;
                 }
 
                 return interviews;
@@ -306,6 +308,8 @@ export default class Connection {
                 const interview = result.rows[0] as IInterview;
                 const skills = await this.getInterviewSkills(id);
                 interview.skills = skills;
+                const specialist_name = await this.getInterviewSpecialist(interview.interview_id);
+                interview.specialist_name = specialist_name;
 
                 return interview;
             }
@@ -358,15 +362,15 @@ export default class Connection {
             SET 
             applicant_name='${newInterviewData.applicant_name}', 
             start_time='${newInterviewData.start_time}', 
-            duration_time='${newInterviewData.duration_time}'
+            duration_time='${newInterviewData.duration_time}',
+            specialist_id=${newInterviewData.specialist_id === null ? 'NULL' : `'${newInterviewData.specialist_id}'`}
             WHERE interview_id=${newInterviewData.interview_id}`;
             await client.query(query);
 
-            this.deleteInterviewSkills(newInterviewData.interview_id);
-
+            await this.deleteInterviewSkills(newInterviewData.interview_id);
             if (newInterviewData.skills) {
                 for (const skill of newInterviewData.skills) {
-                    this.insertSpecialistSkills(newInterviewData.interview_id, skill.skill_id);
+                    this.insertInterviewSkills(newInterviewData.interview_id, skill.skill_id);
                 }
             }
 
@@ -397,6 +401,25 @@ export default class Connection {
         } catch (error) {
             await client.query('ROLLBACK');
 
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async getInterviewSpecialist(id: number): Promise<string> {
+        const client = await dbPool.connect();
+
+        try {
+            const query = `SELECT specialists.full_name
+            FROM interviews
+            LEFT JOIN specialists ON interviews.specialist_id = specialists.specialist_id
+            WHERE interviews.interview_id = ${id};
+            `;
+
+            const result = await client.query(query);
+            return result.rows[0].full_name as unknown as string;
+        } catch (error) {
             throw error;
         } finally {
             client.release();

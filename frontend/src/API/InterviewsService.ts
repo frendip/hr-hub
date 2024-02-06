@@ -1,4 +1,5 @@
 import {IInterview} from '../types/IInterviews';
+import {replaceJsonUndefinedToNull} from '../utils/replaceJsonUndefinedToNull';
 import {urlPath} from './backendUrl';
 
 export default class InterviewsService {
@@ -30,12 +31,13 @@ export default class InterviewsService {
     }
 
     static async updateInterview(updatedInterview: IInterview) {
+        console.log(JSON.stringify(updatedInterview, replaceJsonUndefinedToNull));
         const response = await fetch(this._url, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(updatedInterview)
+            body: JSON.stringify(updatedInterview, replaceJsonUndefinedToNull)
         });
 
         if (!response.ok) {
