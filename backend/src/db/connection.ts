@@ -292,13 +292,22 @@ export default class Connection {
             if (id === undefined) {
                 const query = 'SELECT * FROM interviews';
                 const result = await client.query(query);
+                const interviews = result.rows as IInterview[];
 
-                return result.rows;
+                for (const interview of interviews) {
+                    const skills = await this.getInterviewSkills(interview.interview_id);
+                    interview.skills = skills;
+                }
+
+                return interviews;
             } else {
                 const query = `SELECT * FROM interviews WHERE interview_id=${id}`;
                 const result = await client.query(query);
+                const interview = result.rows[0] as IInterview;
+                const skills = await this.getInterviewSkills(id);
+                interview.skills = skills;
 
-                return result.rows[0];
+                return interview;
             }
         } catch (error) {
             throw error;
@@ -307,17 +316,29 @@ export default class Connection {
         }
     }
 
-    static async insertInterview(interview: IInterviewRaw): Promise<void> {
+    static async insertInterview(interview: IInterviewRaw): Promise<IInterview> {
         const client = await dbPool.connect();
 
         try {
             await client.query('BEGIN');
 
             const query = `INSERT INTO interviews (applicant_name, start_time, duration_time) 
-                VALUES ('${interview.applicant_name}', '${interview.start_time}', '${interview.duration_time}')`;
-            await client.query(query);
+                VALUES ('${interview.applicant_name}', '${interview.start_time}', '${interview.duration_time}')
+                RETURNING interview_id`;
+
+            const result = await client.query(query);
+            const interview_id = result.rows[0]['interview_id'];
+            const newInterview = {...interview, interview_id} as IInterview;
+
+            if (interview.skills) {
+                for (const skill of interview.skills) {
+                    this.insertInterviewSkills(interview_id, skill.skill_id);
+                }
+            }
 
             await client.query('COMMIT');
+
+            return newInterview;
         } catch (error) {
             await client.query('ROLLBACK');
 
@@ -340,6 +361,14 @@ export default class Connection {
             duration_time='${newInterviewData.duration_time}'
             WHERE interview_id=${newInterviewData.interview_id}`;
             await client.query(query);
+
+            this.deleteInterviewSkills(newInterviewData.interview_id);
+
+            if (newInterviewData.skills) {
+                for (const skill of newInterviewData.skills) {
+                    this.insertSpecialistSkills(newInterviewData.interview_id, skill.skill_id);
+                }
+            }
 
             await client.query('COMMIT');
 
@@ -368,6 +397,68 @@ export default class Connection {
         } catch (error) {
             await client.query('ROLLBACK');
 
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async getInterviewSkills(id: number): Promise<ISkill[]> {
+        const client = await dbPool.connect();
+
+        try {
+            const query = `SELECT skills.skill_id, skills.skill_name
+                FROM interviews
+                JOIN interview_skills ON interviews.interview_id = interview_skills.interview_id
+                JOIN skills ON interview_skills.skill_id = skills.skill_id
+                WHERE interviews.interview_id = ${id};`;
+
+            const result = await client.query(query);
+
+            return result.rows;
+        } catch (error) {
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async insertInterviewSkills(interview_id: number, skill_id: number): Promise<void> {
+        const client = await dbPool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const query = `INSERT INTO interview_skills (interview_id, skill_id)
+            VALUES (${interview_id}, ${skill_id});`;
+            await client.query(query);
+
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    }
+
+    static async deleteInterviewSkills(interview_id: number, skill_id?: number): Promise<void> {
+        const client = await dbPool.connect();
+
+        try {
+            await client.query('BEGIN');
+
+            const query =
+                skill_id === undefined
+                    ? `DELETE FROM interview_skills
+            WHERE interview_id = ${interview_id};`
+                    : `DELETE FROM interview_skills
+            WHERE interview_id = ${interview_id} AND skill_id = ${skill_id};`;
+            await client.query(query);
+
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
             throw error;
         } finally {
             client.release();

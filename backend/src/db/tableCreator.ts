@@ -46,7 +46,7 @@ export default async function tableCreator() {
         console.log('Tables interviews created successfully.');
 
         await client.query(`
-        CREATE TABLE IF NOT EXISTS interviews_skills (
+        CREATE TABLE IF NOT EXISTS interview_skills (
             interview_id INT NOT NULL,
             skill_id INT NOT NULL,
             PRIMARY KEY (interview_id, skill_id),

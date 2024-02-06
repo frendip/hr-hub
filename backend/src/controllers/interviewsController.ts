@@ -36,9 +36,9 @@ class InterviewsController {
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const interviewData: IInterviewRaw = req.body;
-            await Connection.insertInterview(interviewData);
+            const newInterview = await Connection.insertInterview(interviewData);
 
-            res.status(200).json({message: 'Interview inserted successfully'});
+            res.status(200).json({interview: newInterview, message: 'Interview inserted successfully'});
         } catch (error) {
             console.error('Error creating interview,', error);
 

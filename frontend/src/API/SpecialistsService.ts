@@ -39,7 +39,7 @@ export default class SpecialistsService {
         });
 
         if (!response.ok) {
-            throw new Error(`Error updating specialists: ${response.statusText}`);
+            throw new Error(`Error updating specialist: ${response.statusText}`);
         }
 
         return await response.json();
@@ -51,7 +51,7 @@ export default class SpecialistsService {
         });
 
         if (!response.ok) {
-            throw new Error(`Error deleting specialists: ${response.statusText}`);
+            throw new Error(`Error deleting specialist: ${response.statusText}`);
         }
 
         return await response.json();

@@ -2,6 +2,7 @@ import {UnknownAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {ISkill} from '../../types/ISkill';
 import SkillsService from '../../API/SkillsService';
 import {fetchSpecialists} from './specialistsSlice';
+import {fetchInterviews} from './interviewsSlice';
 
 export const fetchSkills = createAsyncThunk<ISkill[]>('skills/fetchSkills', async (_, {rejectWithValue}) => {
     try {
@@ -13,11 +14,13 @@ export const fetchSkills = createAsyncThunk<ISkill[]>('skills/fetchSkills', asyn
 });
 
 export const createSkill = createAsyncThunk<ISkill, ISkill>(
-    'skills/createSpecialist',
-    async (newSkill, {rejectWithValue}) => {
+    'skills/createSkill',
+    async (newSkill, {rejectWithValue, dispatch}) => {
         try {
             const response = await SkillsService.createSkill(newSkill);
             const data = response.skill as ISkill;
+            dispatch(fetchSpecialists());
+            dispatch(fetchInterviews());
             return data;
         } catch (error: any) {
             return rejectWithValue(error.message);
@@ -32,6 +35,7 @@ export const updateSkill = createAsyncThunk<ISkill, ISkill>(
             const response = await SkillsService.updateSkill(updatedSkill);
             const data = response.skill as ISkill;
             dispatch(fetchSpecialists());
+            dispatch(fetchInterviews());
             return data;
         } catch (error: any) {
             return rejectWithValue(error.message);
@@ -45,6 +49,7 @@ export const deleteSkill = createAsyncThunk<number, number>(
         try {
             await SkillsService.deleteSkill(skill_id);
             dispatch(fetchSpecialists());
+            dispatch(fetchInterviews());
             return skill_id;
         } catch (error: any) {
             return rejectWithValue(error.message);

@@ -39,7 +39,7 @@ export default class SkillsService {
         });
 
         if (!response.ok) {
-            throw new Error(`Error updating skills: ${response.statusText}`);
+            throw new Error(`Error updating skill: ${response.statusText}`);
         }
 
         return await response.json();
