@@ -23,7 +23,7 @@ export default class SpecialistsService {
         });
 
         if (!response.ok) {
-            throw new Error(`Error creating specialists: ${response.statusText}`);
+            throw new Error(`Error creating specialist: ${response.statusText}`);
         }
 
         return await response.json();

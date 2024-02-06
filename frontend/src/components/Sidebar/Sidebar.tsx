@@ -24,8 +24,11 @@ const Sidebar: FC<SidebarProps> = ({className}) => {
                 >
                     Специалисты
                 </Link>
-                <Link to={'/test1'} className={classes.list__item}>
-                    test1
+                <Link
+                    to={'/skills'}
+                    className={clsx(classes.list__item, pathname === '/skills' && classes.list__item_active)}
+                >
+                    Навыки
                 </Link>
                 <Link to={'/test2'} className={classes.list__item}>
                     test2

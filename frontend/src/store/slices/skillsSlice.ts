@@ -1,6 +1,7 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {UnknownAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import {ISkill} from '../../types/ISkill';
 import SkillsService from '../../API/SkillsService';
+import {fetchSpecialists} from './specialistsSlice';
 
 export const fetchSkills = createAsyncThunk<ISkill[]>('skills/fetchSkills', async (_, {rejectWithValue}) => {
     try {
@@ -10,6 +11,46 @@ export const fetchSkills = createAsyncThunk<ISkill[]>('skills/fetchSkills', asyn
         return rejectWithValue(error.message);
     }
 });
+
+export const createSkill = createAsyncThunk<ISkill, ISkill>(
+    'skills/createSpecialist',
+    async (newSkill, {rejectWithValue}) => {
+        try {
+            const response = await SkillsService.createSkill(newSkill);
+            const data = response.skill as ISkill;
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateSkill = createAsyncThunk<ISkill, ISkill>(
+    'skills/updateSkill',
+    async (updatedSkill, {rejectWithValue, dispatch}) => {
+        try {
+            const response = await SkillsService.updateSkill(updatedSkill);
+            const data = response.skill as ISkill;
+            dispatch(fetchSpecialists());
+            return data;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteSkill = createAsyncThunk<number, number>(
+    'skills/deleteSkill',
+    async (skill_id, {rejectWithValue, dispatch}) => {
+        try {
+            await SkillsService.deleteSkill(skill_id);
+            dispatch(fetchSpecialists());
+            return skill_id;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
 
 enum Status {
     LOADING = 'loading',
@@ -43,12 +84,43 @@ const skillsSlice = createSlice({
                 state.status = Status.LOADING;
                 state.skills = [];
             })
-            .addCase(fetchSkills.rejected, (state, action) => {
+
+            .addCase(createSkill.fulfilled, (state, action) => {
+                state.skills = [...state.skills, action.payload];
+                state.status = Status.SUCCESS;
+            })
+            .addCase(createSkill.pending, (state) => {
+                state.status = Status.LOADING;
+            })
+
+            .addCase(updateSkill.fulfilled, (state, action) => {
+                state.skills = state.skills.map((skill) =>
+                    skill.skill_id === action.payload.skill_id ? action.payload : skill
+                );
+                state.status = Status.SUCCESS;
+            })
+            .addCase(updateSkill.pending, (state) => {
+                state.status = Status.LOADING;
+            })
+
+            .addCase(deleteSkill.fulfilled, (state, action) => {
+                state.skills = state.skills.filter((skill) => skill.skill_id !== action.payload);
+                state.status = Status.SUCCESS;
+            })
+            .addCase(deleteSkill.pending, (state) => {
+                state.status = Status.LOADING;
+            })
+
+            .addMatcher(isError, (state, action: UnknownAction) => {
                 state.status = Status.ERROR;
                 state.errorMessage = action.payload as string;
                 state.skills = [];
             });
     }
 });
+
+const isError = (action: UnknownAction) => {
+    return action.type.endsWith('rejected');
+};
 
 export default skillsSlice.reducer;

@@ -85,6 +85,7 @@ const specialistsSlice = createSlice({
                 state.status = Status.LOADING;
                 state.specialists = [];
             })
+
             .addCase(createSpecialist.fulfilled, (state, action) => {
                 state.specialists = [...state.specialists, action.payload];
                 state.status = Status.SUCCESS;
@@ -92,6 +93,7 @@ const specialistsSlice = createSlice({
             .addCase(createSpecialist.pending, (state) => {
                 state.status = Status.LOADING;
             })
+
             .addCase(updateSpecialist.fulfilled, (state, action) => {
                 state.specialists = state.specialists.map((specialist) =>
                     specialist.specialist_id === action.payload.specialist_id ? action.payload : specialist
@@ -101,6 +103,7 @@ const specialistsSlice = createSlice({
             .addCase(updateSpecialist.pending, (state) => {
                 state.status = Status.LOADING;
             })
+
             .addCase(deleteSpecialist.fulfilled, (state, action) => {
                 state.specialists = state.specialists.filter(
                     (specialist) => specialist.specialist_id !== action.payload
@@ -110,6 +113,7 @@ const specialistsSlice = createSlice({
             .addCase(deleteSpecialist.pending, (state) => {
                 state.status = Status.LOADING;
             })
+
             .addMatcher(isError, (state, action: UnknownAction) => {
                 state.status = Status.ERROR;
                 state.errorMessage = action.payload as string;

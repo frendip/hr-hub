@@ -7,30 +7,15 @@ import clsx from 'clsx';
 interface SpecialistsListProps extends HTMLAttributes<HTMLDivElement> {}
 
 const SpecialistsList: FC<SpecialistsListProps> = ({className}) => {
-    const {specialists, status, errorMessage} = useAppSelector((state) => state.specialists);
+    const {specialists} = useAppSelector((state) => state.specialists);
 
     return (
-        <>
-            {status === 'error' ? (
-                <div className={classes.error}>
-                    <h2 className={classes.error__title}>Произошла ошибка.</h2>
-                    <div className={classes.error__description}>
-                        K сожалению, не удалось получить список специалистов. {errorMessage}
-                    </div>
-                </div>
-            ) : (
-                <div className={clsx(className, classes.specialistList)}>
-                    <SpecialistsTitle />
-                    {status === 'loading' ? (
-                        <div>Loading</div>
-                    ) : (
-                        specialists.map((specialist) => (
-                            <SpecialistItem key={specialist.specialist_id} specialist={specialist} />
-                        ))
-                    )}
-                </div>
-            )}
-        </>
+        <div className={clsx(className, classes.specialistList)}>
+            <SpecialistsTitle />
+            {specialists.map((specialist) => (
+                <SpecialistItem key={specialist.specialist_id} specialist={specialist} />
+            ))}
+        </div>
     );
 };
 
