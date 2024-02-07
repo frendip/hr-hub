@@ -7,6 +7,7 @@ import {CommonButton} from '../Button/Button';
 import {IInterview, IInterviewCheckboxSkill} from '../../../types/IInterviews';
 import {checkSpecialistSkillForInterview} from '../../../utils/checkSpecialistSkillForInterview';
 import {checkWorkTimeIntervalForInterview} from '../../../utils/checkWorkTimeIntervalForInterview';
+import {checkSpecialistInterviewsTimeInterval} from '../../../utils/checkSpecialistInterviewsTimeInterval';
 
 interface InterviewFormProps {
     setPopupActive: Dispatch<SetStateAction<boolean>>;
@@ -38,6 +39,7 @@ const InterviewForm: FC<InterviewFormProps> = ({setPopupActive, onSubmitHandler,
 
     const {skills} = useAppSelector((state) => state.skills);
     const {specialists} = useAppSelector((state) => state.specialists);
+    const {interviews} = useAppSelector((state) => state.interviews);
 
     useEffect(() => {
         if (interview) {
@@ -64,6 +66,11 @@ const InterviewForm: FC<InterviewFormProps> = ({setPopupActive, onSubmitHandler,
 
             if (checkWorkTimeIntervalForInterview(changedInterview, selectedSpecialist)) {
                 alert('Длительность интервью выходит за интервал рабочего времени специалиста');
+                return;
+            }
+
+            if (checkSpecialistInterviewsTimeInterval(changedInterview, selectedSpecialist, interviews)) {
+                alert('Специалист в данное время проводит другое собеседование');
                 return;
             }
         }

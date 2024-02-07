@@ -14,12 +14,11 @@ interface InterviewItemProps {
     interview: IInterview;
 }
 
-const SpecialistItem: FC<InterviewItemProps> = ({interview}) => {
+const InterviewItem: FC<InterviewItemProps> = ({interview}) => {
     const dispatch = useAppDispatch();
     const [popupActive, setPopupActive] = useState(false);
 
     const updateInterviewHandler: SubmitHandler<IInterview> = (updatedInterview) => {
-        console.log(updatedInterview);
         dispatch(updateInterview(updatedInterview));
     };
 
@@ -57,4 +56,4 @@ const SpecialistItem: FC<InterviewItemProps> = ({interview}) => {
     );
 };
 
-export default SpecialistItem;
+export default InterviewItem;

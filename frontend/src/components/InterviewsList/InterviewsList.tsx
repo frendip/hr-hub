@@ -1,5 +1,4 @@
 import {FC, HTMLAttributes} from 'react';
-import SpecialistItem from '../SpecialistItem/SpecialistItem';
 import {useAppSelector} from '../../hooks/useAppSelector';
 import classes from './InterviewsList.module.scss';
 import clsx from 'clsx';

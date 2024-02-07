@@ -17,8 +17,7 @@ const Interviews = () => {
     const {status, errorMessage} = useAppSelector((state) => state.interviews);
 
     const addInterviewsHandler: SubmitHandler<IInterview> = (newInterview) => {
-        //dispatch(createInterview(newInterview));
-        console.log(newInterview);
+        dispatch(createInterview(newInterview));
     };
 
     if (status === 'error') {

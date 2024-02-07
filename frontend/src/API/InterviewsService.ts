@@ -20,7 +20,7 @@ export default class InterviewsService {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(newInterview)
+            body: JSON.stringify(newInterview, replaceJsonUndefinedToNull)
         });
 
         if (!response.ok) {
@@ -31,7 +31,6 @@ export default class InterviewsService {
     }
 
     static async updateInterview(updatedInterview: IInterview) {
-        console.log(JSON.stringify(updatedInterview, replaceJsonUndefinedToNull));
         const response = await fetch(this._url, {
             method: 'PUT',
             headers: {

@@ -149,13 +149,13 @@ export default class Connection {
             const specialist_id = result.rows[0]['specialist_id'];
             const newSpecialist = {...specialist, specialist_id} as ISpecialist;
 
+            await client.query('COMMIT');
+
             if (specialist.skills) {
                 for (const skill of specialist.skills) {
                     this.insertSpecialistSkills(specialist_id, skill.skill_id);
                 }
             }
-
-            await client.query('COMMIT');
 
             return newSpecialist;
         } catch (error) {
@@ -326,26 +326,32 @@ export default class Connection {
         try {
             await client.query('BEGIN');
 
-            const query = `INSERT INTO interviews (applicant_name, start_time, duration_time) 
-                VALUES ('${interview.applicant_name}', '${interview.start_time}', '${interview.duration_time}')
+            const query = `INSERT INTO interviews (applicant_name, start_time, duration_time, specialist_id) 
+                VALUES ('${interview.applicant_name}', '${interview.start_time}', '${interview.duration_time}', ${
+                interview.specialist_id === null ? 'NULL' : `'${interview.specialist_id}'`
+            })
                 RETURNING interview_id`;
 
             const result = await client.query(query);
             const interview_id = result.rows[0]['interview_id'];
             const newInterview = {...interview, interview_id} as IInterview;
 
+            await client.query('COMMIT');
+
             if (interview.skills) {
                 for (const skill of interview.skills) {
-                    this.insertInterviewSkills(interview_id, skill.skill_id);
+                    await this.insertInterviewSkills(interview_id, skill.skill_id);
                 }
             }
 
-            await client.query('COMMIT');
+            if (interview.specialist_id) {
+                const {full_name} = (await this.getSpecialists(interview.specialist_id)) as ISpecialist;
+                interview.specialist_name = full_name;
+            }
 
             return newInterview;
         } catch (error) {
             await client.query('ROLLBACK');
-
             throw error;
         } finally {
             client.release();
@@ -448,7 +454,6 @@ export default class Connection {
 
     static async insertInterviewSkills(interview_id: number, skill_id: number): Promise<void> {
         const client = await dbPool.connect();
-
         try {
             await client.query('BEGIN');
 
